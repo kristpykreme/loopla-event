@@ -2,6 +2,7 @@ import type { Event } from "@/types/event";
 import SearchAndList from "@/components/SearchAndList";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Toast from "@/components/Toast";
 
 export default async function Page() {
   const res = await fetch("http://localhost:3000/api/events", {
@@ -20,6 +21,7 @@ export default async function Page() {
           <Link href="/create">Create Event</Link>
         </Button>
       </div>
+      <Toast />
       <SearchAndList events={events} />
     </main>
   );
