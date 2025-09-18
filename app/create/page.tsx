@@ -58,7 +58,11 @@ export default function CreateEventPage() {
     setSubmitting(false);
 
     if (res.ok) {
-      router.push("/");
+      // trigger banner
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("event:created", "1");
+      }
+      router.replace("/");  
     } else {
       const data = await res.json().catch(() => ({}));
       setErrors({ form: data.error || "Failed to create event" });
