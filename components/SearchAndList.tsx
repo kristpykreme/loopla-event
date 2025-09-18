@@ -64,7 +64,7 @@ export default function SearchAndList({ events }: { events: Event[] }) {
           <Card key={e.id}>
             <CardHeader className="border-b">
               <CardTitle className="text-lg">{e.title}</CardTitle>
-              <CardDescription>{e.date}</CardDescription>
+              <CardDescription>Event date: {e.date}</CardDescription>
               <CardAction className="text-sm uppercase">
                 {e.location}
               </CardAction>
@@ -76,8 +76,8 @@ export default function SearchAndList({ events }: { events: Event[] }) {
               </CardContent>
             )}
 
-            <CardFooter className="border-t text-xs">
-              <time dateTime={e.createdAt}>{formatCreatedAt(e.createdAt)}</time>
+            <CardFooter className="border-t text-xs gap-1">
+              Created:<time dateTime={e.createdAt}>{formatCreatedAt(e.createdAt)}</time>
             </CardFooter>
           </Card>
         ))}
