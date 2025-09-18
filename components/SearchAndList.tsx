@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { Event } from "@/types/event";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
@@ -37,26 +38,59 @@ function objx<T>(input: T): T {
   return walk(input);
 }
 
+type SortMode = "none" | "asc" | "desc";
+
 export default function SearchAndList({ events }: { events: Event[] }) {
   const [search, setSearch] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("none");
 
   // only recomputes when the events prop changes, not on every keystroke in search bar
   const base = useMemo(() => objx(events), [events]);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
-    if (!query) return base;
-    return base.filter((e) => e.title.toLowerCase().includes(query));
-  }, [base, search]);
+    let result = !query
+      ? base
+      : base.filter((e) => e.title.toLowerCase().includes(query));
+
+    if (sortMode !== "none") {
+      result = [...result].sort((a, b) => {
+        const da = new Date(a.date).getTime();
+        const db = new Date(b.date).getTime();
+        if (Number.isNaN(da) || Number.isNaN(db)) return 0;
+        return sortMode === "asc" ? da - db : db - da;
+      });
+    }
+
+    return result;
+  }, [base, search, sortMode]);
+
+  const sortLabel =
+    sortMode === "none"
+      ? "No Date Sort"
+      : sortMode === "asc"
+      ? "Date (Oldest)"
+      : "Date (Newest)";
+
+  function cycleSort() {
+    setSortMode((m) => (m === "none" ? "asc" : m === "asc" ? "desc" : "none"));
+  }
 
   return (
     <section>
-      <div className="mb-4">
+      <div className="flex items-center gap-2 mb-4">
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by title..."
+          className="flex-1"
         />
+        <Button
+          variant={sortMode === "none" ? "outline" : "secondary"}
+          onClick={cycleSort}
+        >
+          {sortLabel}
+        </Button>
       </div>
 
       <div className="space-y-4">
@@ -77,7 +111,8 @@ export default function SearchAndList({ events }: { events: Event[] }) {
             )}
 
             <CardFooter className="border-t text-xs gap-1">
-              Created:<time dateTime={e.createdAt}>{formatCreatedAt(e.createdAt)}</time>
+              Created:
+              <time dateTime={e.createdAt}>{formatCreatedAt(e.createdAt)}</time>
             </CardFooter>
           </Card>
         ))}
