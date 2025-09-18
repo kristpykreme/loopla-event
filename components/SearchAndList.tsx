@@ -13,6 +13,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import Link from "next/link";
 
 const dtf = new Intl.DateTimeFormat("en-SG", {
   dateStyle: "medium",
@@ -97,7 +98,12 @@ export default function SearchAndList({ events }: { events: Event[] }) {
         {filtered.map((e) => (
           <Card key={e.id}>
             <CardHeader className="border-b">
-              <CardTitle className="text-lg">{e.title}</CardTitle>
+              <CardTitle className="text-lg">
+                {" "}
+                <Link href={`/event/${e.id}`} className="hover:underline">
+                  {e.title}
+                </Link>
+              </CardTitle>
               <CardDescription>Event date: {e.date}</CardDescription>
               <CardAction className="text-sm uppercase">
                 {e.location}
