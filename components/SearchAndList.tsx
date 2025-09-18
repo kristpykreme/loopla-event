@@ -13,6 +13,16 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
+const dtf = new Intl.DateTimeFormat("en-SG", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "UTC",
+});
+
+function formatCreatedAt(iso: string) {
+  return dtf.format(new Date(iso));
+}
+
 // walks through events object and return it as it is
 function objx<T>(input: T): T {
   function walk(v: any): any {
@@ -67,7 +77,7 @@ export default function SearchAndList({ events }: { events: Event[] }) {
             )}
 
             <CardFooter className="border-t text-xs">
-              <span>Created: {new Date(e.createdAt).toLocaleString()}</span>
+              <time dateTime={e.createdAt}>{formatCreatedAt(e.createdAt)}</time>
             </CardFooter>
           </Card>
         ))}
