@@ -2,7 +2,16 @@
 
 import { useMemo, useState } from "react";
 import type { Event } from "@/types/event";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardAction,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 
 // walks through events object and return it as it is
 function objx<T>(input: T): T {
@@ -40,21 +49,33 @@ export default function SearchAndList({ events }: { events: Event[] }) {
         />
       </div>
 
-      <ul className="space-y-4">
+      <div className="space-y-4">
         {filtered.map((e) => (
-          <li key={e.id} className="border rounded-lg p-4">
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-lg font-semibold">{e.title}</h2>
-              <span className="text-sm text-gray-500">{e.date}</span>
-            </div>
-            <div className="text-lg">{e.description}</div>
-            <div className="text-sm text-gray-600 uppercase">{e.location}</div>
-          </li>
+          <Card key={e.id}>
+            <CardHeader className="border-b">
+              <CardTitle className="text-lg">{e.title}</CardTitle>
+              <CardDescription>{e.date}</CardDescription>
+              <CardAction className="text-sm uppercase">
+                {e.location}
+              </CardAction>
+            </CardHeader>
+
+            {e.description && (
+              <CardContent className="py-4">
+                <p>{e.description}</p>
+              </CardContent>
+            )}
+
+            <CardFooter className="border-t text-xs">
+              <span>Created: {new Date(e.createdAt).toLocaleString()}</span>
+            </CardFooter>
+          </Card>
         ))}
+
         {filtered.length === 0 && (
-          <li className="text-sm text-gray-500 italic">No events found.</li>
+          <p className="text-sm text-gray-500 italic">No events found.</p>
         )}
-      </ul>
+      </div>
     </section>
   );
 }
